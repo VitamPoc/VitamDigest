@@ -1,6 +1,6 @@
 // DO NOT MODIFY - WILL BE OVERWRITTEN DURING THE BUILD PROCESS
 package fr.gouv.culture.vitam.utils;
-/** Provides the version information of VitamDigestTool. */
+/** Provides the version information of VitamTool. */
 public final class Version {
  /** The version identifier. */
  public static final String ID = "1.0.0";

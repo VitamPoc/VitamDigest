@@ -50,7 +50,7 @@ import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 
 /**
- * Dialog to handle configuration change in the GUI
+ * Dialog to handle Digest fine operations
  * 
  * @author "Frederic Bregier"
  * 
