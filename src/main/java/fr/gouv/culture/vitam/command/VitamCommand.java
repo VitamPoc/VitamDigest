@@ -25,6 +25,7 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
+import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.XMLWriter;
 
@@ -32,7 +33,9 @@ import fr.gouv.culture.vitam.digest.CommandExecutionException;
 import fr.gouv.culture.vitam.digest.DigestCompute;
 import fr.gouv.culture.vitam.utils.ConfigLoader;
 import fr.gouv.culture.vitam.utils.StaticValues;
+import fr.gouv.culture.vitam.utils.VitamArgument;
 import fr.gouv.culture.vitam.utils.VitamArgument.VitamOutputModel;
+import fr.gouv.culture.vitam.utils.XmlDom.AllTestsItems;
 import fr.gouv.culture.vitam.utils.VitamResult;
 import fr.gouv.culture.vitam.utils.XmlDom;
 
@@ -61,32 +64,14 @@ import fr.gouv.culture.vitam.utils.XmlDom;
 public class VitamCommand {
 	public static String XMLarg;
 	public static String FILEarg;
-	public static String XSDarg;
-	public static String XSDroot;
 	public static String ATTCHfield;
 	public static String FILEattr;
-	public static String FORMATattr;
-	public static String MIMEattr;
 	public static String IDENTfield;
 	public static String ALGOattr;
-	public static String SCHEMAarg;
-	public static String XSLarg;
-	public static String RNGarg;
-	public static boolean checkFormat = false;
 	public static String checkDigest = null;
-	public static boolean showFormat = false;
-	public static boolean useSchematron = true;
-	public static boolean useXsl = true;
-	public static boolean useXsd = true;
-	public static String Sig;
-	public static String Contain;
 	public static String[] extensions;
 	public static String outputformat = null;
 	public static String outputfile = null;
-	public static String outputarchive = null;
-	public static String xslarchive = null;
-	public static String fromPdfA = null;
-	public static String toPdfA = null;
 	public static String digSource = null;
 	public static String digTarget = null;
 	public static String digGlobal = null;
@@ -284,7 +269,6 @@ public class VitamCommand {
 			} catch (FileNotFoundException e) {
 				System.err.println(StaticValues.LBL.error_wrongoutput.get());
 				outputStream = System.out;
-				outputarchive = null;
 			}
 		}
 		if (outputformat != null) {
@@ -296,9 +280,6 @@ public class VitamCommand {
 				config.argument.outputModel = VitamOutputModel.MultipleXML;
 			} else {
 				System.err.println(StaticValues.LBL.error_wrongformat.get());
-			}
-			if (outputarchive != null) {
-				config.argument.outputModel = VitamOutputModel.OneXML;
 			}
 		}
 		return true;
@@ -314,6 +295,9 @@ public class VitamCommand {
 		if (!checkArgs(args, StaticValues.config)) {
 			printHelp(StaticValues.config);
 			System.exit(1);
+		}
+		if (XMLarg != null) {
+			checkOneXmlFile();
 		}
 		if (checkDigest != null) {
 			computeDigest();
@@ -477,6 +461,97 @@ public class VitamCommand {
 		System.out
 				.println(StaticValues.LBL.action_digest.get() +
 						" [ " + currank + (error > 0 ? " (" + StaticValues.LBL.error_error.get() + error + " ) " : "" ) + " ]");
+	}
+
+
+	/**
+	 * in order: 1) check XML as XML, 2) check XML with XSD, 3) check SCHEMATRON<br>
+	 * 4) check File and Digest<br>
+	 * 5) Transform from XSL, 6) optional action check against profile<br>
+	 * 7) optional check format 8) optional show format<br>
+	 * 
+	 */
+	public static void checkOneXmlFile() {
+		File xml = new File(XMLarg);
+		if (!xml.canRead()) {
+			System.err.println(StaticValues.LBL.error_filenotfound.get() + " XML: " + XMLarg);
+			System.exit(2);
+		}
+		System.out.println("\nCheck: " + XMLarg + "\n");
+
+		VitamArgument argument = new VitamArgument(
+				StaticValues.config.argument.recursive, false, false, false,
+				StaticValues.config.argument.outputModel);
+		VitamResult result = XmlDom.all_tests_in_one(xml, null, StaticValues.config,
+				argument, true);
+		int[] iresult = result.values;
+		switch (StaticValues.config.argument.outputModel) {
+			case TXT:
+				break;
+			case MultipleXML:
+				try {
+					XMLWriter writer = null;
+					writer = new XMLWriter(outputStream, StaticValues.defaultOutputFormat);
+					for (Document document : result.multiples) {
+						writer.write(document);
+						writer.flush();
+					}
+				} catch (UnsupportedEncodingException e2) {
+					System.err.println(StaticValues.LBL.error_error.get() + e2.toString());
+				} catch (IOException e) {
+					System.err.println(StaticValues.LBL.error_error.get() + e.toString());
+				}
+				break;
+			case OneXML:
+				XMLWriter writer = null;
+				try {
+					writer = new XMLWriter(outputStream, StaticValues.defaultOutputFormat);
+					writer.write(result.unique);
+					writer.flush();
+				} catch (UnsupportedEncodingException e2) {
+					System.err.println(StaticValues.LBL.error_error.get() + e2.toString());
+				} catch (IOException e) {
+					System.err.println(StaticValues.LBL.error_error.get() + e.toString());
+				}
+				break;
+		}
+		int error = iresult[AllTestsItems.SystemError.ordinal()] +
+				iresult[AllTestsItems.GlobalError.ordinal()];
+		if (error == 0) {
+			System.out.print("\n\t" + StaticValues.LBL.action_digest.get() + "[");
+			for (int i = AllTestsItems.FileError.ordinal(); i < iresult.length; i += 3) {
+				if (iresult[i + 1] > 0) {
+					System.out.print(" (" + result.labels[i + 1] + "=" + iresult[i + 1] +
+							" " + result.labels[i + 2] + "=" + iresult[i + 2] + ")");
+				} else {
+					System.out.print(" (" + result.labels[i + 2] + "=" + iresult[i + 2] + ")");
+				}
+			}
+			System.out.println(" ]");
+		} else {
+			System.out.print("\n\t" + StaticValues.LBL.error_digest.get() + "[");
+			if (iresult[AllTestsItems.SystemError.ordinal()] > 0) {
+				int i = AllTestsItems.SystemError.ordinal();
+				System.out.print(" (" + result.labels[i] + "=" + iresult[i] + ")");
+			}
+			for (int i = AllTestsItems.FileError.ordinal(); i < iresult.length; i += 3) {
+				System.out.print(" (");
+				if (iresult[i] > 0) {
+					System.out.print(result.labels[i] + "=" + iresult[i] + " ");
+				}
+				if (iresult[i + 1] > 0) {
+					System.out.print(result.labels[i + 1] + "=" + iresult[i + 1] +
+							" " + result.labels[i + 2] + "=" + iresult[i + 2] + ")");
+				} else {
+					System.out.print(result.labels[i + 2] + "=" + iresult[i + 2] + ")");
+				}
+			}
+			if (iresult[9] > 0) {
+				int i = AllTestsItems.GlobalWarning.ordinal();
+				System.out.print(" (" + result.labels[i] + "=" + iresult[i] + ")");
+			}
+			System.out.println(" ]");
+		}
 	}
 
 }

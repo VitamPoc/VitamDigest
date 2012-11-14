@@ -86,9 +86,7 @@ public class XmlDom {
 	public static enum AllTestsItems {
 		SystemError, GlobalError, GlobalWarning,
 		FileError, FileWarning, FileSuccess,
-		DigestError, DigestWarning, DigestSuccess,
-		FormatError, FormatWarning, FormatSuccess,
-		ShowError, ShowWarning, ShowSuccess
+		DigestError, DigestWarning, DigestSuccess
 	}
 
 	/**
@@ -105,8 +103,7 @@ public class XmlDom {
 	 * @return VitamResult
 	 */
 	static final public VitamResult all_tests_in_one(File current_file, RunnerLongTask task,
-			ConfigLoader config, VitamArgument argument, boolean checkDigest, boolean checkFormat,
-			boolean showFormat) {
+			ConfigLoader config, VitamArgument argument, boolean checkDigest) {
 		SAXReader saxReader = new SAXReader();
 		VitamResult finalResult = new VitamResult();
 		Element root = initializeCheck(argument, finalResult, current_file);

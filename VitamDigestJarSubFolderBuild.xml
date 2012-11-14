@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project VitamDigest with libraries in sub-folder">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+    <target name="create_run_jar">
+    	<property name="destdir" location="J:/Git/SEDA/VitamDigest"/>
+    	<property name="srcdir" location="J:/Git/fredericBregier/VitamDigest"/>
+    	<property name="repodir" location="C:/Users/frederic/.m2/repository"/>
+        <jar destfile="${destdir}/VitamDigestGui.jar">
+            <manifest>
+                <attribute name="Main-Class" value="fr.gouv.culture.vitam.gui.VitamGui"/>
+                <attribute name="Class-Path" value=". VitamDigestGui_lib/dom4j-1.6.1.jar VitamDigestGui_lib/xml-apis-1.0.b2.jar VitamDigestGui_lib/jaxen-1.1.4.jar VitamDigestGui_lib/log4j-1.2.17.jar VitamDigestGui_lib/slf4j-api-1.7.1.jar VitamDigestGui_lib/slf4j-log4j12-1.7.1.jar VitamDigestGui_lib/commons-io-2.4.jar"/>
+            </manifest>
+            <fileset dir="${srcdir}/target/classes"/>
+            <fileset dir="${srcdir}/license"/>
+        </jar>
+        <delete dir="${destdir}/VitamDigestGui_lib"/>
+        <mkdir dir="${destdir}/VitamDigestGui_lib"/>
+        <copy file="${repodir}/dom4j/dom4j/1.6.1/dom4j-1.6.1.jar" todir="${destdir}/VitamDigestGui_lib"/>
+        <copy file="${repodir}/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2.jar" todir="${destdir}/VitamDigestGui_lib"/>
+        <copy file="${repodir}/jaxen/jaxen/1.1.4/jaxen-1.1.4.jar" todir="${destdir}/VitamDigestGui_lib"/>
+        <copy file="${repodir}/log4j/log4j/1.2.17/log4j-1.2.17.jar" todir="${destdir}/VitamDigestGui_lib"/>
+        <copy file="${repodir}/org/slf4j/slf4j-api/1.7.1/slf4j-api-1.7.1.jar" todir="${destdir}/VitamDigestGui_lib"/>
+        <copy file="${repodir}/org/slf4j/slf4j-log4j12/1.7.1/slf4j-log4j12-1.7.1.jar" todir="${destdir}/VitamDigestGui_lib"/>
+        <copy file="${repodir}/commons-io/commons-io/2.4/commons-io-2.4.jar" todir="${destdir}/VitamDigestGui_lib"/>
+    	<copy file="${srcdir}/manuel-FR.odt" todir="${destdir}"/>
+    	<copy file="${srcdir}/manuel-FR.pdf" todir="${destdir}"/>
+    	<copy file="${srcdir}/README.md" todir="${destdir}"/>
+    </target>
+</project>

@@ -905,7 +905,7 @@ public class VitamGui extends JFrame implements PropertyChangeListener {
 		if (current_file != null) {
 			config.nbDocument = 0;
 			vitamResult = all_tests_in_one(current_file, null, config, config.argument,
-					false, false, false);
+					false);
 			if (vitamResult.values[AllTestsItems.SystemError.ordinal()] +
 					vitamResult.values[AllTestsItems.GlobalError.ordinal()] > 0) {
 				// error
@@ -939,7 +939,7 @@ public class VitamGui extends JFrame implements PropertyChangeListener {
 	private void digestValid(RunnerLongTask task) {
 		if (current_file != null) {
 			vitamResult = all_tests_in_one(current_file, task, config, config.argument,
-					true, false, false);
+					true);
 			if (vitamResult.values[AllTestsItems.SystemError.ordinal()] +
 					vitamResult.values[AllTestsItems.GlobalError.ordinal()] > 0) {
 				// error
