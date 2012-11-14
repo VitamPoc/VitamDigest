@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Vitam Tools configuration</comment>
+<entry key="vitam.output">2</entry>
+<entry key="vitam.sha256">0</entry>
+<entry key="vitam.filefield">Attachment</entry>
+<entry key="vitam.sha512">0</entry>
+<entry key="vitam.algoattrib">@algorithme</entry>
+<entry key="vitam.fileattrib">@filename</entry>
+<entry key="vitam.digestfield">Integrity</entry>
+<entry key="vitam.checkrecursive">0</entry>
+<entry key="vitam.sha1">1</entry>
+<entry key="vitam.guisave">0</entry>
+<entry key="vitam.docfield">Document</entry>
+</properties>
