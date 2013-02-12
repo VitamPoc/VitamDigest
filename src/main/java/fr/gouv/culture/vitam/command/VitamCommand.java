@@ -79,6 +79,7 @@ public class VitamCommand {
 	public static boolean digPerFile = false;
 	public static PrintStream outputStream = System.out;
 
+	public static final String regexAllAlphaNumSpace = "[^\\w\\s&\"#'{([-|`_\\@)\\]°=+}$£%*,?;.:/!§<>-]";
 	/**
 	 * Enum only to check no double options setup
 	 * @author "Frederic Bregier"

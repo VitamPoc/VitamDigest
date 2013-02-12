@@ -351,7 +351,12 @@ public class DigestCompute {
 					Document unique = XmlDom.factory.createDocument(rootElement);
 					rootElement.add(result);
 					FileOutputStream out = null;
-					File fout = new File(dst, file.getName() + "_digest.xml");
+					String shortname = StaticValues.getSubPath(file, src);
+					String shortnameWithoutFilename = shortname.substring(0, shortname.lastIndexOf(file.getName()));
+					//File fout = new File(dst, file.getName() + "_digest.xml");
+					File fdirout = new File(dst, shortnameWithoutFilename);
+					fdirout.mkdirs();
+					File fout = new File(fdirout, file.getName() + "_digest.xml");
 					try {
 						out = new FileOutputStream(fout);
 						writer.setOutputStream(out);
