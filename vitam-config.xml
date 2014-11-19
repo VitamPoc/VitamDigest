@@ -9,8 +9,8 @@
 <entry key="vitam.algoattrib">@algorithme</entry>
 <entry key="vitam.fileattrib">@filename</entry>
 <entry key="vitam.digestfield">Integrity</entry>
-<entry key="vitam.sha1">0</entry>
 <entry key="vitam.checkrecursive">1</entry>
-<entry key="vitam.docfield">Document</entry>
+<entry key="vitam.sha1">0</entry>
 <entry key="vitam.guisave">1</entry>
+<entry key="vitam.docfield">Document</entry>
 </properties>
